@@ -9,9 +9,9 @@
     // -----------------------------------------------------------------------------------------------------------------
     // Example: <div height-auto-resizer bottom-offset="50"><div>
     //******************************************************************************************************************
-    heightResizer.$inject = ['$window'];
+    heightResizer.$inject = ['$window', '$timeout'];
     /* @ngInject */
-    function heightResizer ($window){
+    function heightResizer ($window, $timeout){
         return {
             restrict:'A',
             scope:{
@@ -24,12 +24,15 @@
 
         function fnLink(scope, element) {
 
-            var parentBottom = scope.bottom && angular.isNumber(parseInt(scope.bottom)) ? parseInt(scope.bottom) : 0;
+            // Bottom offset defined by user
+            var parentBottom = scope.bottom && angular.isNumber(parseFloat(scope.bottom)) ? parseFloat(scope.bottom) : 0;
 
-            changeHeight(); // on page loaded
+            // Resize on page loaded
+            changeHeight(); 
 
+            // Windows resize listener
             angular.element($window).on('resize', function () {
-                changeHeight();   // on windows resize
+                changeHeight();
             });
 
             ///////////////////////////
