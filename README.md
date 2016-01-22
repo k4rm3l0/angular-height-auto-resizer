@@ -9,10 +9,10 @@ height-auto-resizer directive keep element's height to 100%
 $ bower install https://github.com/k4rm3l0/angular-height-auto-resizer.git --save
 ```
 ### Manual install
-Importare nella **index.html** dell'app il file **autoheightresizer.js**
+Import **autoheightresizer.js** file to app **index.html**
 
 ## How to use?
-Inserire signViewer nelle dipendenze dell'app          
+Inject autoheightresizer into app dipendences        
   
 ```js
 angular.module('DemoApp', ['autoheightresizer']);
