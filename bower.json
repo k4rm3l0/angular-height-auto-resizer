@@ -1,0 +1,19 @@
+{
+  "name": "angular-height-auto-resizer",
+  "homepage": "https://github.com/k4rm3l0/angular-height-auto-resizer",
+  "authors": [
+    "k4rm3l0"
+  ],
+  "description": "Keep a div height to 100%",
+  "main": "heightautoresizer.js",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
