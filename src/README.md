@@ -1,7 +1,7 @@
 # angular-height-auto-resizer
 
 ## Informations
-height-auto-resizer directive keep element's height to 100%
+height-auto-resizer directive keep element's height to 100% - [DEMO](https://plnkr.co/edit/A4zXeNPpOfGmEwOFy202?p=preview)
 
 ## Installation
 ### Bower install
