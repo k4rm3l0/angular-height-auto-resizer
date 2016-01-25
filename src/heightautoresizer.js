@@ -9,9 +9,9 @@
     // -----------------------------------------------------------------------------------------------------------------
     // Example: <div height-auto-resizer bottom-offset="50"><div>
     //******************************************************************************************************************
-    heightResizer.$inject = ['$window', '$timeout'];
+    heightResizer.$inject = ['$window'];
     /* @ngInject */
-    function heightResizer ($window, $timeout){
+    function heightResizer ($window){
         return {
             restrict:'A',
             scope:{
@@ -38,13 +38,10 @@
             ///////////////////////////
 
             function changeHeight(){
-                $timeout(
+                scope.$applyAsync(
                     function () {
-
-                        var newHeight = angular.element($window).height() -
-                                        element[0].getBoundingClientRect().top -
+                        var newHeight = angular.element($window).height() - element[0].getBoundingClientRect().top -
                                         parentBottom;
-
                         element.css('height', newHeight +'px');
                     }
                 );
