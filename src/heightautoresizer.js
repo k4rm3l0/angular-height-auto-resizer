@@ -15,7 +15,8 @@
         return {
             restrict:'A',
             scope:{
-                bottom:'@bottomOffset'
+                bottom:'@bottomOffset',
+                fixedHeight:'='
             },
             link:fnLink
         };
@@ -25,7 +26,7 @@
         function fnLink(scope, element) {
 
             // Bottom offset defined by user
-            var parentBottom = scope.bottom && angular.isNumber(parseFloat(scope.bottom)) ? parseFloat(scope.bottom) : 0;
+            var parentBottom = scope.bottom && angular.isNumber(parseFloat(scope.bottom)) ? parseFloat(scope.bottom) :0;
 
             // Resize on page loaded
             changeHeight(); 
@@ -40,6 +41,12 @@
             function changeHeight(){
                 scope.$applyAsync(
                     function () {
+
+                        if(scope.fixedHeight && angular.isNumber( parseInt(scope.fixedHeight) )){
+                            element.css('height', scope.fixedHeight);
+                            return;
+                        }
+
                         var newHeight = angular.element($window).height() - element[0].getBoundingClientRect().top -
                                         parentBottom;
                         element.css('height', newHeight +'px');
