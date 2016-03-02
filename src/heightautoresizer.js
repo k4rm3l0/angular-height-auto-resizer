@@ -16,7 +16,7 @@
             restrict:'A',
             scope:{
                 bottom:'@bottomOffset',
-                fixedHeight:'='
+                fixedHeight:'=fixedHeight'
             },
             link:fnLink
         };
