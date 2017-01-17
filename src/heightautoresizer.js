@@ -13,7 +13,7 @@
     /* @ngInject */
     function heightResizer ($window){
 
-        function refreshHeight( scope, element ) {
+        function refreshHeight( scope, element, bottom ) {
             scope.$applyAsync(
                 function () {
 
@@ -51,11 +51,11 @@
 
                 // Windows resize listener
                 angular.element($window).on('resize', function () {
-                    refreshHeight(scope, element);
+                    refreshHeight(scope, element, bottom);
                 });
 
                 // Resize on page loaded
-                refreshHeight(scope, element);
+                refreshHeight(scope, element, bottom);
             }
         }
     }
