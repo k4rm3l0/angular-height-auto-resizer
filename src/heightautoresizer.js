@@ -21,7 +21,8 @@
                     var parent = angular.element(document.querySelector(scope.parentId));
 
                     if (scope.fixedHeight && angular.isNumber(parseInt(scope.fixedHeight))) {
-                        element.css('height', scope.fixedHeight);
+                        newHeight = scope.fixedHeight - element[0].getBoundingClientRect().top - bottom;
+                        element.css('height', newHeight);
                         return;
                     }
 
