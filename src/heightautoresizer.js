@@ -7,51 +7,55 @@
     //******************************************************************************************************************
     // AUTO RESIZER DIRECTIVE
     // -----------------------------------------------------------------------------------------------------------------
-    // Example: <div height-auto-resizer bottom-offset="50"><div>
+    // Example: <div height-auto-resizer bottom-offset="50" parent-id="'#parent'"><div>
     //******************************************************************************************************************
     heightResizer.$inject = ['$window'];
     /* @ngInject */
     function heightResizer ($window){
-        return {
-            restrict:'A',
-            scope:{
-                bottom:'@bottomOffset',
-                fixedHeight:'=fixedHeight'
-            },
-            link:fnLink
-        };
 
-        //////////////////////////////////////////////////////////////
+        function refreshHeight( scope, element ) {
+            scope.$applyAsync(
+                function () {
 
-        function fnLink(scope, element) {
+                    var newHeight = angular.element($window).height();
+                    var parent = angular.element(document.querySelector(scope.parentId));
 
-            // Bottom offset defined by user
-            var parentBottom = scope.bottom && angular.isNumber(parseFloat(scope.bottom)) ? parseFloat(scope.bottom) :0;
-
-            // Resize on page loaded
-            changeHeight(); 
-
-            // Windows resize listener
-            angular.element($window).on('resize', function () {
-                changeHeight();
-            });
-
-            ///////////////////////////
-
-            function changeHeight(){
-                scope.$applyAsync(
-                    function () {
-
-                        if(scope.fixedHeight && angular.isNumber( parseInt(scope.fixedHeight) )){
-                            element.css('height', scope.fixedHeight);
-                            return;
-                        }
-
-                        var newHeight = angular.element($window).height() - element[0].getBoundingClientRect().top -
-                                        parentBottom;
-                        element.css('height', newHeight +'px');
+                    if (scope.fixedHeight && angular.isNumber(parseInt(scope.fixedHeight))) {
+                        element.css('height', scope.fixedHeight);
+                        return;
                     }
-                );
+
+                    if (scope.parentId && scope.parentId.length > 0 && parent) {
+                        newHeight = parent.height();
+                    }
+
+                    newHeight = newHeight - element[0].getBoundingClientRect().top - bottom;
+
+                    element.css('height', newHeight + 'px');
+                }
+            );
+        }
+
+        return {
+            restrict: 'A',
+            scope: {
+                bottom: '@bottomOffset',
+                fixedHeight: '=fixedHeight',
+                parentId: '@'
+            },
+            link: function (scope, element) {
+
+                // Bottom offset defined by user
+                var parsedBottom = parseFloat(scope.bottom);
+                var bottom = scope.bottom && angular.isNumber(parsedBottom) ? parsedBottom : 0;
+
+                // Windows resize listener
+                angular.element($window).on('resize', function () {
+                    refreshHeight(scope, element);
+                });
+
+                // Resize on page loaded
+                refreshHeight(scope, element);
             }
         }
     }
