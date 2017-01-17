@@ -1,17 +1,18 @@
 (function () {
     'use strict';
 
-    angular.module('heightAutoResizer',[])
-        .directive('heightAutoResizer', heightResizer);
+    var module = angular.module('heightAutoResizer',[]);
 
     //******************************************************************************************************************
-    // AUTO RESIZER DIRECTIVE
+    // HEIGHT AUTO RESIZER DIRECTIVE
     // -----------------------------------------------------------------------------------------------------------------
     // Example: <div height-auto-resizer bottom-offset="50" parent-id="'#parent'"><div>
     //******************************************************************************************************************
-    heightResizer.$inject = ['$window'];
+    module.directive('heightAutoResizer', heightResizerDirectiveFunction);
+
+    heightResizerDirectiveFunction.$inject = ['$window','heightAutoResizer'];
     /* @ngInject */
-    function heightResizer ($window){
+    function heightResizerDirectiveFunction ($window, heightAutoResizer){
 
         function refreshHeight( scope, element, bottom ) {
             scope.$applyAsync(
@@ -60,4 +61,53 @@
             }
         }
     }
+
+    //******************************************************************************************************************
+    // CONFIG PROVIDER
+    //******************************************************************************************************************
+    module.provider('heightAutoResizer', function () {
+
+        var provider = this;
+
+        var bottom, fixedHeight, parentId;
+
+        this.$get = function () {
+            return{
+                bottom:function () {
+                    return provider.bottom();
+                },
+                fixedHeight:function () {
+                    return provider.fixedHeight();
+                },
+                parentId:function () {
+                    return provider.parentId();
+                }
+            }
+        };
+
+        //////////////////////////////////////////////////////////
+        // Getters and Setters
+        //////////////////////////////////////////////////////////
+
+        this.bottom = function ( value ) {
+            if(value && angular.isNumber(parseFloat(value))){
+                bottom = parseFloat(value);
+            }
+            return bottom;
+        };
+
+        this.fixedHeight = function (value) {
+            if(value && angular.isNumber(parseFloat(value))){
+                fixedHeight = parseFloat(value);
+            }
+            return fixedHeight;
+        };
+
+        this.parentId = function (value) {
+            if(value && value.length > 0){
+                parentId = value;
+            }
+            return parentId;
+        };
+    });
 })();
