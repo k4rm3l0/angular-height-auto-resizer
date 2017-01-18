@@ -5,8 +5,6 @@
 
     //******************************************************************************************************************
     // HEIGHT AUTO RESIZER DIRECTIVE
-    // -----------------------------------------------------------------------------------------------------------------
-    // Example: <div height-auto-resizer bottom-offset="50" parent-id="'#parent'"><div>
     //******************************************************************************************************************
     module.directive('heightAutoResizer', heightResizerDirectiveFunction);
 
@@ -14,26 +12,33 @@
     /* @ngInject */
     function heightResizerDirectiveFunction ($window, heightAutoResizer){
 
-        function refreshHeight( scope, element, bottom ) {
+        function refreshHeight( scope, element ) {
+
+            function setHeight( height) {
+                element.css('height', height + 'px');
+            }
+
             scope.$applyAsync(
                 function () {
+                    var fixedHeight = heightAutoResizer.fixedHeight()   || scope.fixedHeight,
+                        parentId    = heightAutoResizer.parentId()      || scope.parentId,
+                        bottom      = heightAutoResizer.bottom()        || scope.bottom         || 0;
 
                     var newHeight = angular.element($window).height();
-                    var parent = angular.element(document.querySelector(scope.parentId));
+                    var parentSelector = document.querySelector(parentId);
+                    var parent = parentSelector != null ? angular.element(parentSelector) : undefined;
 
-                    if (scope.fixedHeight && angular.isNumber(parseInt(scope.fixedHeight))) {
-                        newHeight = scope.fixedHeight - element[0].getBoundingClientRect().top - bottom;
-                        element.css('height', newHeight);
-                        return;
+                    if(angular.isDefined(fixedHeight) && angular.isNumber(parseFloat(fixedHeight))) {
+                        newHeight = parseFloat(fixedHeight);
                     }
 
-                    if (scope.parentId && scope.parentId.length > 0 && parent) {
-                        newHeight = parent.height();
+                    if(angular.isDefined(parent)) {
+                        newHeight = parent.height() + parent[0].getBoundingClientRect().top;
                     }
 
-                    newHeight = newHeight - element[0].getBoundingClientRect().top - bottom;
+                    newHeight = newHeight - element[0].getBoundingClientRect().top - parseFloat(bottom);
 
-                    element.css('height', newHeight + 'px');
+                    setHeight(newHeight);
                 }
             );
         }
@@ -47,17 +52,13 @@
             },
             link: function (scope, element) {
 
-                // Bottom offset defined by user
-                var parsedBottom = parseFloat(scope.bottom);
-                var bottom = scope.bottom && angular.isNumber(parsedBottom) ? parsedBottom : 0;
-
                 // Windows resize listener
                 angular.element($window).on('resize', function () {
-                    refreshHeight(scope, element, bottom);
+                    refreshHeight(scope, element);
                 });
 
                 // Resize on page loaded
-                refreshHeight(scope, element, bottom);
+                refreshHeight(scope, element);
             }
         }
     }
@@ -74,13 +75,13 @@
         this.$get = function () {
             return{
                 bottom:function () {
-                    return provider.bottom();
+                    return angular.copy(bottom);
                 },
                 fixedHeight:function () {
-                    return provider.fixedHeight();
+                    return angular.copy(fixedHeight);
                 },
                 parentId:function () {
-                    return provider.parentId();
+                    return angular.copy(parentId);
                 }
             }
         };
@@ -89,7 +90,7 @@
         // Getters and Setters
         //////////////////////////////////////////////////////////
 
-        this.bottom = function ( value ) {
+        this.bottom = function (value) {
             if(value && angular.isNumber(parseFloat(value))){
                 bottom = parseFloat(value);
             }
